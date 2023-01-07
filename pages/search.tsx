@@ -3,12 +3,25 @@ import Header from "@app/components/Header";
 import { useRouter } from "next/router";
 import { format } from "date-fns"
 import InfoCard from "@app/components/InfoCard";
+import { useEffect, useState } from "react";
 
-function Search({ searchResults }: any) {
+export default function Search() {
+  const [searchResults, setSerachResults] = useState([]);
   const router = useRouter();
+
+  const searchResultsFetch = async () => {
+    const res = await fetch("/api/search");
+    const data = await res.json();
+    console.log(data);
+    setSerachResults(() => data);
+  }
 
   const { location, startDate, endDate, noOfGuest }: any = router.query;
   const range = `${format(new Date(startDate), "dd MMMM yyyy")} - ${format(new Date(endDate), "dd MMMM yyyy")}`;
+
+  useEffect(() => {
+    searchResultsFetch();
+  }, [])
 
   return (
     <div>
@@ -17,7 +30,7 @@ function Search({ searchResults }: any) {
         <section className="flex-grow pt-14 px-6">
           <p className="text-xs">300+ Stays - {range} - {noOfGuest} number of guest</p>
           <h1 className="text-3xl font-semibold mt-2 mb-6">Stays in {location}</h1>
-          <div className="hidde lg:inline-flex mb-5 space-x-3 space-y-3">
+          <div className="hidden lg:inline-flex mb-5 gap-3">
             <button className="button">Cancellation Flexibility</button>
             <button className="button">Type of Place</button>
             <button className="button">Price</button>
@@ -25,7 +38,7 @@ function Search({ searchResults }: any) {
             <button className="button">More filters</button>
           </div>
           <div className="flex flex-col">
-            {searchResults.map((searchResult: any, index: number) => (
+            {searchResults.map((searchResult: SearchResult, index: number) => (
               <InfoCard
                 key={`infocard${index}`}
                 img={searchResult.img}
@@ -44,15 +57,4 @@ function Search({ searchResults }: any) {
       <Footer />
     </div>
   )
-}
-
-export default Search;
-
-export async function getServerSideProps() {
-  const searchResults = await fetch("https://www.jsonkeeper.com/b/5NPS").then(res => res.json())
-  return {
-    props: {
-      searchResults
-    }
-  }
 }

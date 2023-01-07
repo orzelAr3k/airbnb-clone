@@ -13,6 +13,7 @@ import { DateRangePicker } from 'react-date-range';
 import { useRouter } from "next/router";
 
 export default function Header({placeholder}: any) {
+  const [searchInputClick, setSearchInputClick] = useState(false);
   const [searchInput, setSearchInput] = useState("");
   const [startDate, setStartDate] = useState(new Date());
   const [endDate, setEndDate] = useState(new Date());
@@ -32,6 +33,7 @@ export default function Header({placeholder}: any) {
 
   const resetInput = () => {
     setSearchInput("");
+    setSearchInputClick(false);
   }
 
   const search = () => {
@@ -48,7 +50,7 @@ export default function Header({placeholder}: any) {
 
 
   return (
-    <header className="sticky top-0 z-50 grid grid-cols-3 bg-white shadow-md p-5 md:px-10">
+    <header className="sticky top-0 z-50 grid grid-cols-3 bg-white shadow-md gap-x-5 p-5">
       <div className="relative flex items-center h-10 cursor-pointer my-auto"
         onClick={() => router.push("/")}
       >
@@ -61,11 +63,12 @@ export default function Header({placeholder}: any) {
       </div>
 
       {/* Search */}
-      <div className="flex items-center justify-between border-2 rounded-full p-2 md:shadow-sm">
+      <div className="flex items-center justify-between border-2 rounded-full p-2 md:shadow-sm ">
         <input
           value={searchInput}
           onChange={(e) => setSearchInput(e.target.value)}
-          className="flex-grow bg-transparent outline-none"
+          onClick={(e) => setSearchInputClick(true)}
+          className="flex-grow bg-transparent outline-none overflow-clip text-ellipsis"
           type="text"
           placeholder={placeholder || "Start your search"}
         />
@@ -73,15 +76,15 @@ export default function Header({placeholder}: any) {
       </div>
 
       <div className="flex items-center justify-end space-x-4 text-gray-500">
-        <p className="hidden md:inline-flex">Become a host</p>
-        <GlobeAltIcon className="h-6" />
-        <div className="flex items-center space-x-2 border-2 p-2 rounded-full">
+        <p className="hidden md:inline-flex hover:cursor-pointer">Become a host</p>
+        <GlobeAltIcon className="h-6 hover:cursor-pointer" />
+        <div className="flex items-center space-x-2 border-2 p-2 rounded-full hover:cursor-pointer">
           <Bars3BottomRightIcon className="h-6" />
           <UserCircleIcon className="h-6" />
         </div>
       </div>
 
-      {searchInput && (
+      {searchInputClick && (
         <div className="flex flex-col col-span-3 mx-auto">
           <DateRangePicker
             ranges={[selectionRange]}
