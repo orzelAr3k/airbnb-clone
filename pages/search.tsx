@@ -4,6 +4,7 @@ import { useRouter } from "next/router";
 import { format } from "date-fns"
 import InfoCard from "@app/components/InfoCard";
 import { useEffect, useState } from "react";
+import dayjs from 'dayjs';
 
 export default function Search() {
   const [searchResults, setSerachResults] = useState([]);
@@ -17,7 +18,7 @@ export default function Search() {
   }
 
   const { location, startDate, endDate, noOfGuest }: any = router.query;
-  const range = `${format(new Date(startDate), "dd MMMM yyyy")} - ${format(new Date(endDate), "dd MMMM yyyy")}`;
+  const range = `${dayjs(startDate).format('dd MMMM, YYYY')} - ${dayjs(endDate).format('dd MMMM YYYY')}`;
 
   useEffect(() => {
     searchResultsFetch();
